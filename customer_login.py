@@ -4,6 +4,8 @@ from sqlite3 import Error
 from View_Accounts import *
 from View_All_FD import *
 from View_All_Loan import *
+from transfer_money import *
+from withdraw import *
 import tkinter
 import tkinter.messagebox
 
@@ -14,6 +16,39 @@ def sql_connection():
     except Error:
         print(Error)
 def customer(customer_id):
+    def bankerlogin():
+        account_id = Account.get()
+        amount = Amount.get()
+        #amount = int(amount)
+        account_type = Account_type.get()
+        if(account_id != ''):
+            con = sql_connection()
+            cursorObj = con.cursor()
+            cursorObj.execute("SELECT COUNT(*) FROM "+account_type+" WHERE ACCOUNT_ID = " + repr(account_id))
+            rows = cursorObj.fetchall()
+            if(rows[0][0] != 0):
+                cursorObj.execute("select *  FROM "+account_type+" WHERE ACCOUNT_ID = " + repr(account_id))
+                if(int(amount) >= 0):
+                    #login
+                    cursorObj.execute("UPDATE "+account_type+" SET BALANCE = BALANCE + "+str(int(amount))+" WHERE ACCOUNT_ID = " + repr(account_id))
+                    header_banker.delete("Error2")
+                    header_banker.delete("Error3")
+                    tkinter.messagebox.showinfo( "DONE" , "Amount has been debited.")
+                    print("hi")
+                    con.commit()
+                    con.close()
+                else:
+                    header_banker.create_text(250,90,fill="RED",font="Times 10 ",
+                                    text="ENTER AMOUNT GREATER THAN 0" , tag = "Error3")
+                    con.close()
+            else:
+                header_banker.create_text(250,90,fill="RED",font="Times 10 ",
+                                text="INVALID ACCOUNT NUMBER", tag = "Error2")
+                con.close()
+        else:
+            header_banker.create_text(250,90,fill="RED",font="Times 10 ",
+                            text="INVALID ACCOUNT NUMBER", tag = "Error2")
+            con.close() 
     def customerlogin ():
         loan_id = loan.get()
         amount = Amount.get()
@@ -38,14 +73,12 @@ def customer(customer_id):
             print(count)
             cursorObj.execute("SELECT * FROM LOAN WHERE LOAN_NO = " + repr(loan_id))
             loan_det = cursorObj.fetchall()
-            #print(loan_det)
             if(count >= 2 ):
                 cursorObj.execute("select *  FROM "+acc_type+" WHERE ACCOUNT_ID = " + repr(account_id))
                 det = cursorObj.fetchall()
                 if(int(amount) >= 0):
                     if(int(loan_det[0][1])-int(amount) >= 0):
                         if(int(det[0][1]) - int(amount) >= 0):
-                        #login
                             cursorObj.execute("UPDATE "+acc_type+" SET BALANCE = BALANCE - "+str(int(amount))+" WHERE ACCOUNT_ID = " + repr(account_id))
                             cursorObj.execute("UPDATE LOAN SET LOAN_AMOUNT = LOAN_AMOUNT - "+str(int(amount))+" WHERE LOAN_NO = " + repr(loan_id))
                             canvas1.delete("Error2")
@@ -83,6 +116,10 @@ def customer(customer_id):
 
         if v.get() == '3':
             view_fd(customer_id)
+        if v.get() == '4':
+            transfer_money(customer_id)
+        if v.get() == '5':
+            withdrawal(customer_id)
         
     main=Toplevel()
     main.title('Sinha Bank')
@@ -117,7 +154,7 @@ def customer(customer_id):
 
 
     canvas1 = Canvas(main, width = 520, height = 100)
-    canvas1.pack(side = TOP, pady = 103 )
+    canvas1.pack(side = TOP, pady = 90 )
     loan = Entry(main)
     canvas1.create_text(125,20,fill="black",font="Times 13 ",
                             text="Enter the amount to be deposited")
@@ -136,14 +173,36 @@ def customer(customer_id):
     deposit_btn = Button(canvas1, text='APPROVE', command=customerlogin)
     canvas1.create_window(420, 90, window=deposit_btn)
 
-   
+    header_banker = Canvas(main, width = 520, height = 100)
+    header_banker.pack(side = TOP, pady = 10 )
+    Account = Entry(main)
+    header_banker.create_text(125,20,fill="black",font="Times 13 ",
+                            text="Enter the amount to be deposited")
+    header_banker.create_window(210, 45, window=Account)
+    header_banker.create_text(75,45,fill="black",font="Times 13 ",
+                            text="Account Number")
+    Amount = Entry(main)
+    header_banker.create_window(210, 65, window=Amount)
+    header_banker.create_text(75,65,fill="black",font="Times 13 ",
+                            text="Amount")
+
+    Account_type = StringVar(header_banker)
+    Account_type.set("SAVINGS_ACCOUNT") 
+
+    option = OptionMenu(header_banker, Account_type, "SAVINGS_ACCOUNT", "CURRENT_ACCOUNT")
+    header_banker.create_window(400, 50, window=option)
+    
+    deposit_btn = Button(header_banker, text='ADD', command=bankerlogin)
+    header_banker.create_window(420, 90, window=deposit_btn)
 
     v = StringVar(main, "1") 
       
     # Dictionary to create multiple buttons 
     values = {"View All Accounts" : "1", 
               "View loan Repayment " : "2", 
-              "View Fixed deposits" : "3" } 
+              "View Fixed deposits" : "3",
+              "Transfer Money" : "4" ,
+              "Withdrawal" : "5"}
       
     # Loop is used to create multiple Radiobuttons 
     # rather than creating each button seperately 

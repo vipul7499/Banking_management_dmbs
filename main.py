@@ -32,15 +32,15 @@ def customerlogin ():
                 con.close()
                 customer(username)
             else:
-                canvas2.create_text(150,260,fill="RED",font="Times 10 ",
+                canvas1.create_text(150,260,fill="RED",font="Times 10 ",
                                 text="INVALID USERNAME OR PASSWORD" , tag = "Error1")
                 con.close()
         else:
-            canvas2.create_text(150,260,fill="RED",font="Times 10 ",
+            canvas1.create_text(150,260,fill="RED",font="Times 10 ",
                             text="INVALID USERNAME OR PASSWORD", tag = "Error1")
             con.close()
     else:
-        canvas2.create_text(150,260,fill="RED",font="Times 10 ",
+        canvas1.create_text(150,260,fill="RED",font="Times 10 ",
                         text="INVALID USERNAME OR PASSWORD", tag = "Error1")
         con.close()
     
@@ -79,10 +79,10 @@ def bankerlogin():
 main = Tk()
 
 main.geometry("1000x750")
-main.configure(background='light green')
+main.configure(background='#00a8ff')
 main.title('Banking Managment System')
+heading = Label(main ,bg="#fbc531",font="Helvetica 20 bold italic ", text='Welcome to Sinha bank')
 
-heading = Label(main ,bg="blue",font="Helvetica 20 bold italic", text='Welcome to Sinha bank')
 heading.pack()
 
 
@@ -91,7 +91,7 @@ canvas1 = Canvas(main, width = 300, height = 400)
 canvas1.pack(side = RIGHT , padx = 40)
 #text = Label(canvas1,font="Helvetica 10 bold italic", text='k')
 
-canvas1.create_text(100,40,fill="darkblue",font="Times 20 italic bold", text="Customer login")
+canvas1.create_text(100,40,fill="#2f3640",font="Times 20 italic bold", text="Customer login")
 canvas1.create_text(50,140,fill="black",font="Times 10 ", text="ID")
 canvas1.create_text(50,190,fill="black",font="Times 10 ", text="PASS")
 entry1 = Entry(main) 
@@ -108,7 +108,7 @@ canvas1.create_window(140, 220, window=button1)
 
 canvas2 = Canvas(main, width = 300, height = 400)
 canvas2.pack(side = LEFT , padx = 40)
-canvas2.create_text(100,40,fill="darkblue",font="Times 20 italic bold", text="Banker login")
+canvas2.create_text(100,40,fill="#2f3640",font="Times 20 italic bold", text="Banker login")
 canvas2.create_text(50,140,fill="black",font="Times 10 ", text="ID")
 canvas2.create_text(50,190,fill="black",font="Times 10 ", text="PASS")
 entry3 = Entry(main) 

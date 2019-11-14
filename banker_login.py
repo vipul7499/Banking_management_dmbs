@@ -53,39 +53,7 @@ def banker(banker_id):
         if v.get() == '9':
             print_branch()
             
-    def bankerlogin():
-        account_id = Account.get()
-        amount = Amount.get()
-        #amount = int(amount)
-        account_type = Account_type.get()
-        if(account_id != ''):
-            con = sql_connection()
-            cursorObj = con.cursor()
-            cursorObj.execute("SELECT COUNT(*) FROM "+account_type+" WHERE ACCOUNT_ID = " + repr(account_id))
-            rows = cursorObj.fetchall()
-            if(rows[0][0] != 0):
-                cursorObj.execute("select *  FROM "+account_type+" WHERE ACCOUNT_ID = " + repr(account_id))
-                if(int(amount) >= 0):
-                    #login
-                    cursorObj.execute("UPDATE "+account_type+" SET BALANCE = BALANCE + "+str(int(amount))+" WHERE ACCOUNT_ID = " + repr(account_id))
-                    header_banker.delete("Error2")
-                    header_banker.delete("Error3")
-                    tkinter.messagebox.showinfo( "DONE" , "Amount has been debited.")
-                    print("hi")
-                    con.commit()
-                    con.close()
-                else:
-                    header_banker.create_text(250,90,fill="RED",font="Times 10 ",
-                                    text="ENTER AMOUNT GREATER THAN 0" , tag = "Error3")
-                    con.close()
-            else:
-                header_banker.create_text(250,90,fill="RED",font="Times 10 ",
-                                text="INVALID ACCOUNT NUMBER", tag = "Error2")
-                con.close()
-        else:
-            header_banker.create_text(250,90,fill="RED",font="Times 10 ",
-                            text="INVALID ACCOUNT NUMBER", tag = "Error2")
-            con.close()    
+       
     global img
     con = sql_connection()
     cursorObj = con.cursor()
@@ -111,27 +79,9 @@ def banker(banker_id):
                             text=name)
     
 
-    header_banker = Canvas(root, width = 520, height = 100)
-    header_banker.pack(side = TOP, pady = 103 )
-    Account = Entry(root)
-    header_banker.create_text(125,20,fill="black",font="Times 13 ",
-                            text="Enter the amount to be deposited")
-    header_banker.create_window(210, 45, window=Account)
-    header_banker.create_text(75,45,fill="black",font="Times 13 ",
-                            text="Account Number")
-    Amount = Entry(root)
-    header_banker.create_window(210, 65, window=Amount)
-    header_banker.create_text(75,65,fill="black",font="Times 13 ",
-                            text="Amount")
-
-    Account_type = StringVar(header_banker)
-    Account_type.set("SAVINGS_ACCOUNT") 
-
-    option = OptionMenu(header_banker, Account_type, "SAVINGS_ACCOUNT", "CURRENT_ACCOUNT")
-    header_banker.create_window(400, 50, window=option)
+    canvas1 = Canvas(root, width = 520, height = 100)
+    canvas1.pack(side = TOP, pady = 103 )
     
-    deposit_btn = Button(header_banker, text='ADD', command=bankerlogin)
-    header_banker.create_window(420, 90, window=deposit_btn)
     v = StringVar(root, "1") 
       
     values = {"Add customer" : "1",
